@@ -1,0 +1,23 @@
+# Secrets & Credentials (CRITICAL)
+.env
+.env.*
+
+.streamlit/secrets.toml
+
+# Python & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+env/
+.venv/
+Pipfile.lock
+
+# Logs & Databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+
+.vscode/
