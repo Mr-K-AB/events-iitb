@@ -4,9 +4,9 @@
 
 A full-stack event management app, containerized for one-command deployment:
 
-- **Backend:** FastAPI + PostgreSQL (SQLAlchemy), JWT auth, Google OAuth
+- **Backend:** FastAPI + PostgreSQL (SQLAlchemy), JWT auth, Google OAuth?
 - **Frontend:** Streamlit (talks to the API over HTTP)
-- **Proxy:** nginx — single public entrypoint, ready to scale
+- **Proxy:** nginx/ngrok — single public entrypoint, ready to scale
 
 ## Roles
 
@@ -27,7 +27,7 @@ Role is contextual, not a fixed choice at signup:
 
 Can limit the signups so that only **@iitb.ac.in** accounts can use the platform:
 
-- **Google sign-in**
+- **Google sign-in**?
 - **Email/password**
 
 ## How it works

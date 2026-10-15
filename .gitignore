@@ -21,3 +21,5 @@ Pipfile.lock
 *.db
 
 .vscode/
+
+.DS_Store
