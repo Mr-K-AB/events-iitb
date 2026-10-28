@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, engine
-import models  # noqa: F401  (ensures models are registered before create_all)
+import models
 from routers import auth, events, registrations, volunteers, attendance, users, admin
 from config import ADMIN_EMAILS
 from database import SessionLocal
