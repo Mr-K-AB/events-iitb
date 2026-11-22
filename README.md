@@ -75,7 +75,8 @@ event_platform/
 │   └── example.env         # for running the frontend standalone (no Docker)
 ├── docker-compose.yml
 ├── .gitignore
-└── README.md         
+├── README.md
+└── example.env          
 ```
 
 ## Deploying with Docker
