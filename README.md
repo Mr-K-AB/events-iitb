@@ -43,3 +43,63 @@ so sign-in works regardless of capitalization.
     a manual-entry fallback — that marks attendance instantly and idempotently.
 11. Organizer marks volunteers themselves present/absent from the same dashboard.
 
+## Project layout
+
+```
+event_platform/
+├── backend/
+│   ├── main.py            # FastAPI app, mounts routers, creates tables, admin bootstrap
+│   ├── config.py          # env-driven settings (secret, domain restriction, admin emails)
+│   ├── database.py        # SQLAlchemy engine/session
+│   ├── models.py          # ORM models (User, Event, EventRegistration, EventVolunteer)
+│   ├── schemas.py         # Pydantic request/response models
+│   ├── security.py        # password hashing, JWT, role-check dependencies
+│   ├── routers/
+│   │   ├── auth.py            # signup / login / me
+│   │   ├── users.py           # self-service organizer permission requests
+│   │   ├── admin.py           # approve/reject organizer requests, manage admins
+│   │   ├── events.py          # create/list/update events (organizer-gated)
+│   │   ├── registrations.py   # request/approve/reject + QR image endpoint
+│   │   ├── volunteers.py      # invite/accept/decline + volunteer attendance
+│   │   └── attendance.py      # QR scan endpoint + attendance list
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── .dockerignore
+│   └── example.env         # for running the backend standalone (no Docker)
+├── frontend/
+│   ├── app.py              # Streamlit UI (all views/roles)
+│   ├── api_client.py       # thin requests wrapper around the API
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── .dockerignore
+│   └── example.env         # for running the frontend standalone (no Docker)
+├── docker-compose.yml
+├── .gitignore
+└── README.md         
+```
+
+## Deploying with Docker
+
+```bash
+cp example.env .env
+```
+
+Edit `.env`:
+- `SECRET_KEY` — generate with `python3 -c "import secrets; print(secrets.token_urlsafe(48))"`
+- `ADMIN_EMAILS` — at least one `@iitb.ac.in` email that should start as admin
+- `POSTGRES_PASSWORD` — set a real password
+
+```bash
+docker compose up -d --build
+```
+
+- `http://localhost:8000` → the FastAPI backend (interactive docs at `/docs`)
+- `http://localhost:8501` → the Streamlit app
+
+Sign up with an `ADMIN_EMAILS` account first — you land as admin immediately and can approve other
+organizers from the Admin Dashboard.
+
+This runs one instance each of Postgres, the backend, and the frontend — sized for a single department's
+or fest's worth of traffic. If it ever needs to handle much more load, the backend is already stateless
+(JWT auth, no server-side sessions) so it could be scaled horizontally behind a load balancer later
+without any code changes — just not something this setup needs today.
