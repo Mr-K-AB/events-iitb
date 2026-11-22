@@ -94,3 +94,77 @@ def my_events():
 def get_event(event_id):
     r = requests.get(f"{API_BASE_URL}/events/{event_id}", headers=_headers())
     return _handle(r)
+
+# ---------- Registrations ----------
+def register_for_event(event_id):
+    r = requests.post(f"{API_BASE_URL}/events/{event_id}/register", headers=_headers())
+    return _handle(r)
+
+
+def my_registrations():
+    r = requests.get(f"{API_BASE_URL}/registrations/mine", headers=_headers())
+    return _handle(r)
+
+
+def list_registrations(event_id):
+    r = requests.get(f"{API_BASE_URL}/events/{event_id}/registrations", headers=_headers())
+    return _handle(r)
+
+
+def decide_registration(registration_id, status):
+    r = requests.patch(
+        f"{API_BASE_URL}/registrations/{registration_id}/decision",
+        json={"status": status},
+        headers=_headers(),
+    )
+    return _handle(r)
+
+
+def get_registration_qr_bytes(registration_id):
+    r = requests.get(f"{API_BASE_URL}/registrations/{registration_id}/qr", headers=_headers())
+    return _handle(r)
+
+
+# ---------- Volunteers ----------
+def invite_volunteer(event_id, email):
+    r = requests.post(
+        f"{API_BASE_URL}/events/{event_id}/volunteers/invite", json={"email": email}, headers=_headers()
+    )
+    return _handle(r)
+
+
+def list_volunteers(event_id):
+    r = requests.get(f"{API_BASE_URL}/events/{event_id}/volunteers", headers=_headers())
+    return _handle(r)
+
+
+def my_volunteer_assignments():
+    r = requests.get(f"{API_BASE_URL}/volunteers/mine", headers=_headers())
+    return _handle(r)
+
+
+def respond_to_invite(volunteer_id, accept):
+    r = requests.patch(
+        f"{API_BASE_URL}/volunteers/{volunteer_id}/respond", json={"accept": accept}, headers=_headers()
+    )
+    return _handle(r)
+
+
+def mark_volunteer_attendance(event_id, volunteer_id, present=True):
+    r = requests.patch(
+        f"{API_BASE_URL}/events/{event_id}/volunteers/{volunteer_id}/attendance",
+        json={"present": present},
+        headers=_headers(),
+    )
+    return _handle(r)
+
+
+# ---------- Attendance / Scan ----------
+def scan_qr(event_id, token):
+    r = requests.post(f"{API_BASE_URL}/events/{event_id}/scan", json={"token": token}, headers=_headers())
+    return _handle(r)
+
+
+def event_attendance(event_id):
+    r = requests.get(f"{API_BASE_URL}/events/{event_id}/attendance", headers=_headers())
+    return _handle(r)
