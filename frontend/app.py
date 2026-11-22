@@ -456,5 +456,71 @@ elif page == "Volunteer Dashboard":
                     st.write(f"{mark} {x['participant_name']}")
             except Exception as e:
                 st.error(str(e))
+# ADMIN DASHBOARD
+elif page == "Admin Dashboard":
+    st.header("Admin Dashboard")
+
+    tab_requests, tab_users = st.tabs(["Organizer Requests", "All Users"])
+
+    with tab_requests:
+        st.subheader("Pending organizer requests")
+        try:
+            pending = api.admin_list_organizer_requests(status="pending")
+        except Exception as e:
+            st.error(str(e))
+            pending = []
+
+        if not pending:
+            st.info("No pending requests.")
+
+        for u in pending:
+            c1, c2, c3 = st.columns([3, 1, 1])
+            c1.write(f"**{u['name']}** — {u['email']}")
+            if c2.button("Approve", key=f"admin_appr_{u['id']}"):
+                try:
+                    api.admin_decide_organizer_request(u["id"], True)
+                    st.rerun()
+                except Exception as e:
+                    st.error(str(e))
+            if c3.button("Reject", key=f"admin_rej_{u['id']}"):
+                try:
+                    api.admin_decide_organizer_request(u["id"], False)
+                    st.rerun()
+                except Exception as e:
+                    st.error(str(e))
+
+    with tab_users:
+        st.subheader("All users")
+        try:
+            all_users = api.admin_list_users()
+        except Exception as e:
+            st.error(str(e))
+            all_users = []
+
+        for u in all_users:
+            c1, c2, c3 = st.columns([3, 1.5, 1.5])
+            badges = []
+            if u["is_admin"]:
+                badges.append("👑 admin")
+            badges.append(f"organizer: {u['organizer_status']}")
+            c1.write(f"**{u['name']}** — {u['email']}  \n_{', '.join(badges)}_")
+
+            if u["id"] != user["id"]:
+                if not u["is_admin"]:
+                    if c2.button("Make admin", key=f"mkadmin_{u['id']}"):
+                        try:
+                            api.admin_set_admin(u["id"], True)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(str(e))
+                else:
+                    if c2.button("Remove admin", key=f"rmadmin_{u['id']}"):
+                        try:
+                            api.admin_set_admin(u["id"], False)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(str(e))
+            else:
+                c2.caption("(you)")
 
 
