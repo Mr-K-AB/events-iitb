@@ -103,3 +103,39 @@ This runs one instance each of Postgres, the backend, and the frontend — sized
 or fest's worth of traffic. If it ever needs to handle much more load, the backend is already stateless
 (JWT auth, no server-side sessions) so it could be scaled horizontally behind a load balancer later
 without any code changes — just not something this setup needs today.
+
+### Logs / troubleshooting
+
+```bash
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose ps
+```
+
+## Running without Docker (local dev)
+
+### 1. Postgres
+
+```bash
+docker run -d --name event_platform_db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=eventdb -p 5432:5432 postgres:16
+```
+
+### 2. Backend
+
+```bash
+cd backend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # fill in SECRET_KEY, ADMIN_EMAILS
+uvicorn main:app --reload --port 8000
+```
+
+### 3. Frontend
+
+```bash
+cd frontend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+streamlit run app.py
+```
